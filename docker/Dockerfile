@@ -9,7 +9,7 @@
 #
 # docker run -i --rm -p 8081:8081 springboot/sample-demo
 ####
-FROM registry.access.redhat.com/ubi8/openjdk-17:1.15-1.1682053058 AS builder
+FROM registry.redhat.io/ubi9/openjdk-17:1.20-2.1725851028 AS builder
 
 # Build dependency offline to streamline build
 RUN mkdir project
@@ -25,7 +25,7 @@ RUN grep version target/maven-archiver/pom.properties | cut -d '=' -f2 >.env-ver
 RUN grep artifactId target/maven-archiver/pom.properties | cut -d '=' -f2 >.env-id
 RUN mv target/$(cat .env-id)-$(cat .env-version).jar target/export-run-artifact.jar
 
-FROM registry.access.redhat.com/ubi8/openjdk-17-runtime:1.15-1.1682053056
+FROM registry.redhat.io/ubi8/openjdk-17-runtime:1.20-3.1724181070
 COPY --from=builder /home/jboss/project/target/export-run-artifact.jar  /deployments/export-run-artifact.jar
 EXPOSE 8081
 ENTRYPOINT ["/opt/jboss/container/java/run/run-java.sh", "--server.port=8081"]
